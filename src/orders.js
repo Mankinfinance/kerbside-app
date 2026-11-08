@@ -137,7 +137,15 @@ export function createOrderService({ db, gateway, config, log = console }) {
     return o;
   }
 
-  async function release(o, etaMinutes) {
+  // One release per order at a time, so a double tap can't complete the payment twice.
+  const releasing = new Map();
+  function release(o, etaMinutes) {
+    if (!releasing.has(o.id)) releasing.set(o.id, doRelease(o, etaMinutes).finally(() => releasing.delete(o.id)));
+    return releasing.get(o.id);
+  }
+  async function doRelease(o, etaMinutes) {
+    const fresh = row(o.id);
+    if (fresh.status !== 'held') return fresh;
     await gateway.completePayment(o.square_payment_id);
     db.prepare('UPDATE orders SET status = ?, released_at = ?, eta_minutes = ? WHERE id = ? AND status = ?').run('cooking', nowIso(), etaMinutes ?? null, o.id, 'held');
     const updated = row(o.id);

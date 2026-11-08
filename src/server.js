@@ -64,7 +64,10 @@ export function buildServer({ db, gateway, config, logger = false }) {
   app.addHook('preHandler', async (req) => {
     if (req.method === 'GET' || req.method === 'HEAD') return;
     const origin = req.headers.origin;
-    if (origin && new URL(origin).host !== req.headers.host) throw new AppError(403, 'Cross-site request blocked.', 'cross_site');
+    if (!origin) return;
+    let host = null;
+    try { host = new URL(origin).host; } catch { /* "null" or malformed origin */ }
+    if (host !== req.headers.host) throw new AppError(403, 'Cross-site request blocked.', 'cross_site');
   });
 
   app.setErrorHandler((err, req, reply) => {

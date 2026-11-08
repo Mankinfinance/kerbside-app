@@ -232,6 +232,22 @@ describe('holds and safety', () => {
     assert.equal(await app.orders.releaseExpiredHolds(), 1);
     assert.equal(db.prepare('SELECT status FROM orders WHERE id = ?').get(body.id).status, 'cooking');
   });
+  test('a double tap on "Leaving now" completes the payment once', async () => {
+    const { app, gateway } = setup();
+    const { body } = await place(app);
+    let completes = 0;
+    const orig = gateway.completePayment;
+    gateway.completePayment = async (id) => { completes++; await new Promise((r) => setTimeout(r, 20)); return orig(id); };
+    const go = () => app.inject({ method: 'POST', url: `/api/orders/${body.id}/leaving`, headers: { 'x-order-token': body.accessToken }, payload: { etaMinutes: 5 } });
+    const [a, b] = await Promise.all([go(), go()]);
+    assert.equal(completes, 1);
+    assert.deepEqual([a.statusCode, b.statusCode].sort(), [200, 200]);
+  });
+  test('a "null" origin is rejected cleanly', async () => {
+    const { app } = setup();
+    const r = await app.inject({ method: 'POST', url: '/api/orders', headers: { origin: 'null' }, payload: orderPayload() });
+    assert.equal(r.statusCode, 403);
+  });
   test('cross-site writes are blocked', async () => {
     const { app } = setup();
     const r = await app.inject({ method: 'POST', url: '/api/orders', headers: { origin: 'https://evil.example', host: 'localhost:80' }, payload: orderPayload() });
