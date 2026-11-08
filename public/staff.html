@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kerbside staff screen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display&family=Inter:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<script type="module" src="/staff.js"></script>
+</head>
+<body>
+<div class="wrap wide">
+  <header class="top">
+    <span class="brand">Kerbside. <span class="muted sm" style="font-family:var(--body)">Staff</span></span>
+    <div class="row" id="who" hidden>
+      <select id="store" aria-label="Store"></select>
+      <button class="btn ghost" id="availBtn">Sold out</button>
+      <button class="btn ghost" id="logout">Sign out</button>
+    </div>
+  </header>
+
+  <form id="login" class="panel" style="max-width:420px;margin:40px auto;display:grid;gap:12px" hidden>
+    <h1>Sign in</h1>
+    <label class="f">Email<input type="email" id="email" autocomplete="username" required></label>
+    <label class="f">Password<input type="password" id="password" autocomplete="current-password" required></label>
+    <p class="err" id="loginErr" role="alert"></p>
+    <button class="btn" type="submit">Sign in</button>
+  </form>
+
+  <section id="avail" class="panel" hidden aria-label="Sold out today">
+    <h2 style="margin-top:0">Sold out today</h2>
+    <p class="muted sm">Tick anything this store can't make right now. Customers see it straight away.</p>
+    <div class="avail" id="availList"></div>
+  </section>
+
+  <main id="board" class="board" hidden aria-live="polite"></main>
+  <p class="err" id="err" role="alert"></p>
+</div>
+</body>
+</html>

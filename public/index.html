@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kerbside: order ahead</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display&family=Inter:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="/styles.css">
+<script type="module" src="/app.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="brand">Kerbside.</span>
+    <label class="f" style="min-width:220px">Store<select id="store" aria-label="Choose your store"></select></label>
+  </header>
+  <div class="test-banner" id="testBanner" hidden>Test mode. Payments use Square test cards and nothing is charged.</div>
+  <main id="view" aria-live="polite"></main>
+</div>
+<div class="bar" id="bar" hidden><div class="inner"><button class="btn block" id="barBtn"></button></div></div>
+
+<dialog id="itemDialog" aria-labelledby="itemTitle">
+  <form method="dialog" id="itemForm">
+    <h2 id="itemTitle" style="margin-top:0"></h2>
+    <p class="muted sm" id="itemDesc"></p>
+    <div id="itemOpts"></div>
+    <div class="row" style="justify-content:space-between;margin:12px 0">
+      <span class="muted">Quantity</span>
+      <div class="qty"><button type="button" id="qtyDown" aria-label="Fewer">−</button><span id="qty">1</span><button type="button" id="qtyUp" aria-label="More">+</button></div>
+    </div>
+    <div class="row">
+      <button class="btn ghost" value="cancel" formnovalidate>Cancel</button>
+      <button class="btn" style="flex:1" id="addBtn" value="add">Add to bag</button>
+    </div>
+  </form>
+</dialog>
+</body>
+</html>
